@@ -24,14 +24,31 @@ class StudentController {
     }
     async update ({params, request, response}) {
         if (!params) return response.status(404).json({warning: 'Invalid data request'})
-        const studentInfo = request.only(['nis', 'nama', 'kelas'])
+        // const studentInfo = request.only(['nis', 'nama', 'kelas'])
+        // const student = await Student.find(params.id)
+        // if (!student) {
+        //     return response.status(404).json({warning: 'Resource not found'})
+        // }
+        // student.nis = studentInfo.nis
+        // student.nama = studentInfo.nama
+        // student.kelas = studentInfo.kelas
+        // await student.save()
+        const studentInfo = request.all()
         const student = await Student.find(params.id)
-        if (!student) {
+        if(studentInfo){
+            if(studentInfo.nis){
+                student.nis = studentInfo.nis
+            }
+            if(studentInfo.nama){
+                student.nama = studentInfo.nama
+            }
+            if(studentInfo.kelas){
+                student.kelas = studentInfo.kelas
+            }
+        }else{
             return response.status(404).json({warning: 'Resource not found'})
         }
-        student.nis = studentInfo.nis
-        student.nama = studentInfo.nama
-        student.kelas = studentInfo.kelas
+
         await student.save()
 
         const newStudent = await Student.all()
